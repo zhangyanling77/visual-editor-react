@@ -1,3 +1,5 @@
+import './ReactVisualEditor.scss';
+
 export const ReactVisualEditor: React.FC<{}> = () => {
   return (
     <div className="react-visual-editor">
