@@ -1,12 +1,10 @@
-import { useState } from 'react';
+import { ReactVisualEditor } from './packages/ReactVisualEditor';
+import './App.scss';
 
 function App() {
-  const [number, setNumber] = useState(0);
   return (
     <div className="App">
-      <p>{number}</p>
-      <button onClick={() => setNumber(number + 1)}>+</button>
-      <button onClick={() => setNumber(number - 1)}>-</button>
+      <ReactVisualEditor />
     </div>
   )
 }
