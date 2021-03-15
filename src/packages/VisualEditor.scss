@@ -8,16 +8,16 @@ $itc: #314659; // 字体颜色
 $icc: rgba(0, 0, 0, 0.45); // 图标颜色
 $boxShadowColor: #f0f1f2; // 阴影的颜色
 
-$primary: #13c2c2; // 主色
+$primary: #1890ff; // 主色
 
-.react-visual-editor {
+.visual-editor {
   position: fixed;
   top: 10px;
   bottom: 10px;
   left: 10px;
   right: 10px;
   overflow: hidden;
-  // background-color: white;
+  background-color: white;
 
   &:before {
     position: fixed;
@@ -25,17 +25,17 @@ $primary: #13c2c2; // 主色
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: rgb(0, 0, 0, 0.1);
     content: '';
+    background-color: rgb(0, 0, 0, 0.1);
   }
 
-  .react-visual-editor-menu,
-  .react-visual-editor-head,
-  .react-visual-editor-operator,
-  .react-visual-editor-body {
+  .visual-editor-menu,
+  .visual-editor-head,
+  .visual-editor-operator,
+  .visual-editor-body {
     position: absolute;
 
-    &.react-visual-editor-head {
+    &.visual-editor-head {
       top: 0;
       left: $menuSize;
       right: $operatorSize;
@@ -44,21 +44,54 @@ $primary: #13c2c2; // 主色
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #eee;
+      background-color: white;
     }
 
-    &.react-visual-editor-menu {
+    &.visual-editor-menu {
       top: 0;
       left: 0;
       bottom: 0;
       width: $menuSize;
       background-color: white;
       border-right: 1px solid $ibc;
-      padding: 10px;
+      padding: 16px;
       box-sizing: border-box;
+
+      .visual-editor-menu-item {
+        border: 1px solid $ibc;
+        margin-bottom: 16px;
+        position: relative;
+        padding: 40px 16px 20px 16px;
+        text-align: center;
+
+        &::after {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          content: '';
+        }
+
+        &:hover {
+          border-color: $primary;
+          cursor: move;
+        }
+
+        .visual-editor-menu-item-name {
+          position: absolute;
+          top: -1px;
+          left: -1px;
+          background-color: $primary;
+          color: white;
+          padding: 0 10px;
+          font-size: 12px;
+          line-height: 2em;
+        }
+      }
     }
 
-    &.react-visual-editor-operator {
+    &.visual-editor-operator {
       top: 0;
       right: 0;
       bottom: 0;
@@ -69,7 +102,7 @@ $primary: #13c2c2; // 主色
       box-sizing: border-box;
     }
 
-    &.react-visual-editor-body {
+    &.visual-editor-body {
       top: 0;
       left: $menuSize;
       right: $operatorSize;
@@ -77,7 +110,7 @@ $primary: #13c2c2; // 主色
       box-sizing: border-box;
       padding-top: $headSize;
       padding-bottom: 300px;
-      background-color: white;
+      background-color: #f6f6f6;
       overflow: auto;
       display: flex;
       justify-content: center;
