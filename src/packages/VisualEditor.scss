@@ -44,7 +44,6 @@ $primary: #1890ff; // 主色
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: white;
     }
 
     &.visual-editor-menu {
@@ -56,6 +55,7 @@ $primary: #1890ff; // 主色
       border-right: 1px solid $ibc;
       padding: 16px;
       box-sizing: border-box;
+      overflow: auto;
 
       .visual-editor-menu-item {
         border: 1px solid $ibc;
@@ -71,6 +71,7 @@ $primary: #1890ff; // 主色
           bottom: 0;
           left: 0;
           content: '';
+          z-index: 99;
         }
 
         &:hover {
@@ -116,5 +117,21 @@ $primary: #1890ff; // 主色
       justify-content: center;
     }
   }
+  .visual-editor-container {
+    background-color: white;
+    position: relative;
 
+    .visual-editor-block {
+      position: absolute;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+    }
+  }
 }
