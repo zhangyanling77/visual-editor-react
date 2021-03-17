@@ -19,6 +19,23 @@ export interface VisualEditorCompnent {
   preview: () => JSX.Element, // 组件预览内容
   render: () => JSX.Element, // 组件渲染内容
 }
+/* 创建一个block数据 */
+export function createVisualBlock({
+  top,
+  left,
+  component,
+}: {
+  top: number,
+  left: number,
+  component: VisualEditorCompnent,
+}) {
+  return {
+    componentKey: component.key,
+    top,
+    left,
+  }
+}
+
 /* 创建一个编辑器预设配置对象信息 */
 export function createVisualConfig() {
   /** 
