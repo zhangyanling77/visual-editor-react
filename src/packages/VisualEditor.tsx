@@ -6,6 +6,7 @@ import {
   VisualEditorValue,
   VisualEditorCompnent,
   createVisualBlock,
+  VisualEditorBlock,
 } from "./VisualEditor.utils";
 import { VisualEditorBlocks } from "./VisualEditorBlock";
 
@@ -22,21 +23,62 @@ export const VisualEditor: React.FC<{
     }),
     [props.value.container.width, props.value.container.height]
   );
+  // 计算当前编辑的数据中，哪些block是被选中的，哪些是未选中的
+  const focusData = useMemo(() => {
+    const focus: VisualEditorBlock[] = [];
+    const unFocus: VisualEditorBlock[] = [];
+    props.value.blocks.forEach((block) => {
+      (block.focus ? focus : unFocus).push(block);
+    });
+    return { focus, unFocus };
+  }, [props.value.blocks]);
+
   const containerRef = useRef({} as HTMLDivElement);
+  // 对外暴露方法
+  const methods = {
+    // 更新blocks，触发重新渲染
+    updateBlocks: (blocks: VisualEditorBlock[]) => {
+      props.onChange({
+        ...props.value,
+        blocks: [...blocks],
+      });
+    },
+    // 清空选中的元素
+    clearFocus: (external?: VisualEditorBlock) => {
+      (!!external
+        ? focusData.focus.filter((item) => item !== external)
+        : focusData.focus
+      ).forEach((block) => {
+        block.focus = false;
+      });
+      methods.updateBlocks(props.value.blocks);
+    },
+  };
   // 拖拽block的处理
   const menuDraggier = (() => {
     const dragData = useRef({
       dragComponent: null as null | VisualEditorCompnent,
-    })
+    });
     const block = {
-      dragstart: useCallbackRef((e: React.DragEvent<HTMLDivElement>, dragComponent: VisualEditorCompnent) => {
-        containerRef.current.addEventListener("dragenter", container.dragenter);
-        containerRef.current.addEventListener("dragover", container.dragover);
-        containerRef.current.addEventListener("dragleave", container.dragleave);
-        containerRef.current.addEventListener("drop", container.drop);
-        // 记录拖拽的是哪一个组件
-        dragData.current.dragComponent = dragComponent;
-      }),
+      dragstart: useCallbackRef(
+        (
+          e: React.DragEvent<HTMLDivElement>,
+          dragComponent: VisualEditorCompnent
+        ) => {
+          containerRef.current.addEventListener(
+            "dragenter",
+            container.dragenter
+          );
+          containerRef.current.addEventListener("dragover", container.dragover);
+          containerRef.current.addEventListener(
+            "dragleave",
+            container.dragleave
+          );
+          containerRef.current.addEventListener("drop", container.drop);
+          // 记录拖拽的是哪一个组件
+          dragData.current.dragComponent = dragComponent;
+        }
+      ),
       dragend: useCallbackRef((e: React.DragEvent<HTMLDivElement>) => {
         containerRef.current.removeEventListener(
           "dragenter",
@@ -80,20 +122,35 @@ export const VisualEditor: React.FC<{
   })();
   // 选中block的处理
   const focusHandler = (() => {
-    const block = (e: React.MouseEvent<HTMLDivElement>) => {
-      console.log('点击了block')
+    const mousedownBlock = (e: React.MouseEvent<HTMLDivElement>, block: VisualEditorBlock) => {
+      if (e.shiftKey) {
+        // 如果按住了shift键，此时没有选中block，就选中该block，否则让这个block的选中状态取反
+        if (focusData.focus.length <= 1) {
+          block.focus = true;
+        } else {
+          block.focus = !block.focus;
+        }
+        methods.updateBlocks(props.value.blocks);
+      } else {
+        // 如果点击的这个block没有被选中，才清空这个其他选中的block，否则不做任何事；防止拖拽多个block，取消其他block的选中状态
+        if (!block.focus) {
+          block.focus = true;
+          methods.clearFocus(block);
+        }
+      }
     };
-    const container = (e: React.MouseEvent<HTMLDivElement>) => {
+    const mousedownContainer = (e: React.MouseEvent<HTMLDivElement>) => {
       if (e.target !== e.currentTarget) {
         return;
       }
-      console.log('点击了container')
+      if (!e.shiftKey) {
+        methods.clearFocus();
+      }
     };
-
     return {
-      block,
-      container,
-    }
+      block: mousedownBlock,
+      container: mousedownContainer,
+    };
   })();
 
   return (
@@ -105,7 +162,7 @@ export const VisualEditor: React.FC<{
               key={index}
               className="visual-editor-menu-item"
               draggable
-              onDragStart={e => menuDraggier.dragstart(e, component)}
+              onDragStart={(e) => menuDraggier.dragstart(e, component)}
               onDragEnd={menuDraggier.dragend}
             >
               {component.preview()}
@@ -130,7 +187,7 @@ export const VisualEditor: React.FC<{
               config={props.config}
               block={block}
               key={index}
-              onMouseDown={focusHandler.block}
+              onMouseDown={e => focusHandler.block(e, block)}
             />
           ))}
         </div>
