@@ -3,6 +3,7 @@ export interface VisualEditorBlock {
   componentKey: string, // component对象的key，通过这个来找到visual config中的component
   top: number, // block元素的top定位
   left: number, // block元素的left定位
+  adjustPosition: boolean, // block元素是否需要调整位置
 }
 /* 编辑器编辑的数据类型 */
 export interface VisualEditorValue {
@@ -33,6 +34,7 @@ export function createVisualBlock({
     componentKey: component.key,
     top,
     left,
+    adjustPosition: true,
   }
 }
 
