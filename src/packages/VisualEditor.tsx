@@ -23,7 +23,7 @@ export const VisualEditor: React.FC<{
     [props.value.container.width, props.value.container.height]
   );
   const containerRef = useRef({} as HTMLDivElement);
-  // 拖拽
+  // 拖拽block的处理
   const menuDraggier = (() => {
     const dragData = useRef({
       dragComponent: null as null | VisualEditorCompnent,
@@ -78,6 +78,23 @@ export const VisualEditor: React.FC<{
 
     return block;
   })();
+  // 选中block的处理
+  const focusHandler = (() => {
+    const block = (e: React.MouseEvent<HTMLDivElement>) => {
+      console.log('点击了block')
+    };
+    const container = (e: React.MouseEvent<HTMLDivElement>) => {
+      if (e.target !== e.currentTarget) {
+        return;
+      }
+      console.log('点击了container')
+    };
+
+    return {
+      block,
+      container,
+    }
+  })();
 
   return (
     <div className="visual-editor">
@@ -106,12 +123,14 @@ export const VisualEditor: React.FC<{
           className="visual-editor-container"
           style={containerStyles}
           ref={containerRef}
+          onMouseDown={focusHandler.container}
         >
           {props.value.blocks.map((block, index) => (
             <VisualEditorBlocks
               config={props.config}
               block={block}
               key={index}
+              onMouseDown={focusHandler.block}
             />
           ))}
         </div>
