@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useRef } from "react";
 import { VisualEditorBlock, VisualEditorConfig } from "./VisualEditor.utils";
-import { useUpdate } from './hook/useUpdate';
+import { useUpdate } from "./hook/useUpdate";
+import classNames from "classnames";
 
 export const VisualEditorBlocks: React.FC<{
   block: VisualEditorBlock;
   config: VisualEditorConfig;
+  onMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }> = (props) => {
   const blockRef = useRef({} as HTMLDivElement);
   const { update } = useUpdate();
@@ -12,10 +14,16 @@ export const VisualEditorBlocks: React.FC<{
     () => ({
       top: `${props.block.top}px`,
       left: `${props.block.left}px`,
-      opacity: props.block.adjustPosition ? '0' : '', // 为了防止电脑性能差出现闪一下再调整位置的情况
+      opacity: props.block.adjustPosition ? "0" : "", // 为了防止电脑性能差出现闪一下再调整位置的情况
     }),
     [JSON.stringify(props.block)]
   );
+  const blockClasses = useMemo(() => classNames([
+    'visual-editor-block',
+    {
+      'visual-editor-block-focus': props.block.focus,
+    }
+  ]), [props.block.focus]);
 
   const component = props.config.componentMap[props.block.componentKey];
 
@@ -31,7 +39,12 @@ export const VisualEditorBlocks: React.FC<{
   }, []);
 
   return (
-    <div className="visual-editor-block" style={blockStyles} ref={blockRef}>
+    <div
+      className={blockClasses}
+      style={blockStyles}
+      ref={blockRef}
+      onMouseDown={props.onMouseDown}
+    >
       {component?.render()}
     </div>
   );
