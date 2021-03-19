@@ -4,6 +4,7 @@ export interface VisualEditorBlock {
   top: number, // block元素的top定位
   left: number, // block元素的left定位
   adjustPosition: boolean, // block元素是否需要调整位置
+  focus: boolean, // block当前是否被选中
 }
 /* 编辑器编辑的数据类型 */
 export interface VisualEditorValue {
@@ -35,6 +36,7 @@ export function createVisualBlock({
     top,
     left,
     adjustPosition: true,
+    focus: false,
   }
 }
 
