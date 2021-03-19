@@ -10,6 +10,8 @@ $boxShadowColor: #f0f1f2; // 阴影的颜色
 
 $primary: #1890ff; // 主色
 
+$size: 4px;
+
 .visual-editor {
   position: fixed;
   top: 10px;
@@ -131,6 +133,18 @@ $primary: #1890ff; // 主色
         right: 0;
         bottom: 0;
         left: 0;
+      }
+
+      &.visual-editor-block-focus {
+        &::before {
+          content: '';
+          position: absolute;
+          top: -$size;
+          right: -$size;
+          bottom: -$size;
+          left: -$size;
+          border: 1px dashed $primary;
+        }
       }
     }
   }
