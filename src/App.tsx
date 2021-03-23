@@ -1,8 +1,8 @@
-import { VisualEditor} from './packages/VisualEditor';
-import './App.scss';
-import { visualConfig } from './visual.config';
 import { useState } from 'react';
+import { VisualEditor} from './packages/VisualEditor';
+import { visualConfig } from './visual.config';
 import { VisualEditorValue } from './packages/VisualEditor.utils';
+import './App.scss';
 
 function App() {
   const [editorValue, setEditorValue] = useState<VisualEditorValue>({
