@@ -33,4 +33,8 @@ export function useVisualEditorCommand({
       };
     },
   });
+
+  return {
+    delete: () => commander.state.commands.delete(),
+  }
 }
