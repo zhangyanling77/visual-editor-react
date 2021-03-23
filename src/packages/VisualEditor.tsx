@@ -9,6 +9,7 @@ import {
 } from "./VisualEditor.utils";
 import { VisualEditorBlocks } from "./VisualEditorBlock";
 import { notification } from "antd";
+import { useVisualEditorCommand } from './VisualEditor.commander';
 import "./VisualEditor.scss";
 
 export const VisualEditor: React.FC<{
@@ -194,6 +195,12 @@ export const VisualEditor: React.FC<{
 
     return { mousedown };
   })();
+  // 命令对象
+  const commander = useVisualEditorCommand({
+    value: props.value,
+    focusData,
+    updateBlocks: methods.updateBlocks,
+  });
   // 操作按钮
   const buttons: {
     label: string | (() => string),
@@ -202,10 +209,10 @@ export const VisualEditor: React.FC<{
     handler: () => void,
   }[] = [
     { label: '撤销', icon: 'icon-back', handler: () => {
-      // commander.undo();
+      // commander.undo()
     }, tip: 'ctrl+z' },
     { label: '重做', icon: 'icon-forward', handler: () => {
-      // commander.redo();
+      // commander.redo()
     }, tip: 'ctrl+y, ctrl+shift+z' },
     {
       label: () => preview ? '编辑' : '预览',
@@ -247,9 +254,7 @@ export const VisualEditor: React.FC<{
     { label: '置底', icon: 'icon-place-bottom', handler: () => {
       // commander.placeBottom();
     }, tip: 'ctrl+down' },
-    { label: '删除', icon: 'icon-delete', handler: () => {
-      // commander.delete();
-    }, tip: 'ctrl+d, backspace, delete' },
+    { label: '删除', icon: 'icon-delete', handler: commander.delete, tip: 'ctrl+d, backspace, delete' },
     { label: '清空', icon: 'icon-reset', handler: () => {
       // commander.clear();
     } },
