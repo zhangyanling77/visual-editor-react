@@ -125,6 +125,7 @@ $size: 4px;
 
     .visual-editor-block {
       position: absolute;
+      user-select: none;
 
       &::after {
         content: '';
