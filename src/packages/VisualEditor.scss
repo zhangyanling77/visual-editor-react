@@ -46,6 +46,49 @@ $size: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
+
+      .visual-editor-head-button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: $primary;
+        color: white;
+        padding: 4px 14px;
+        cursor: pointer;
+        position: relative;
+        transition: all linear 0.1s;
+        user-select: none;
+
+        & > span {
+          font-size: 12px;
+        }
+        &:not(:last-child) {
+          &::after {
+            content: '';
+            position: absolute;
+            right: -1px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: rgba(255, 255, 255, 0.5);
+          }
+        }
+        &:first-child {
+          border-top-left-radius: 4px;
+          border-bottom-left-radius: 4px;
+        }
+        &:last-child {
+          border-top-right-radius: 4px;
+          border-bottom-right-radius: 4px;
+        }
+        &:hover {
+          color: $primary;
+          background-color: rgba($primary, 0.1);
+        }
+        &:active {
+          background-color: rgba($primary, 0.2);;
+        }
+      }
     }
 
     &.visual-editor-menu {
