@@ -1,6 +1,5 @@
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useCallbackRef } from "./hook/useCallbackRef";
-import "./VisualEditor.scss";
 import {
   VisualEditorConfig,
   VisualEditorValue,
@@ -9,12 +8,16 @@ import {
   VisualEditorBlock,
 } from "./VisualEditor.utils";
 import { VisualEditorBlocks } from "./VisualEditorBlock";
+import { notification } from "antd";
+import "./VisualEditor.scss";
 
 export const VisualEditor: React.FC<{
   value: VisualEditorValue;
   onChange: (val: VisualEditorValue) => void;
   config: VisualEditorConfig;
 }> = (props) => {
+  const [preview, setPreview] = useState(false); // 当前是画布否为预览状态
+  const [editing, setEditing] = useState(false); // 当前画布是否为编辑状态
   // 设置画布的宽高
   const containerStyles = useMemo(
     () => ({
@@ -176,7 +179,7 @@ export const VisualEditor: React.FC<{
       const { clientX: moveX, clientY: moveY } = e;
       const durX = moveX - startX;
       const durY = moveY - startY;
-      focusData.focus.forEach((block: VisualEditorBlock, index: number) => {
+      focusData.focus.forEach((block, index) => {
         const { top, left } = startPosArray[index];
         block.top = top + durY;
         block.left = left + durX;
@@ -191,6 +194,74 @@ export const VisualEditor: React.FC<{
 
     return { mousedown };
   })();
+  // 操作按钮
+  const buttons: {
+    label: string | (() => string),
+    icon: string | (() => string),
+    tip?: string | (() => string),
+    handler: () => void,
+  }[] = [
+    { label: '撤销', icon: 'icon-back', handler: () => {
+      // commander.undo();
+    }, tip: 'ctrl+z' },
+    { label: '重做', icon: 'icon-forward', handler: () => {
+      // commander.redo();
+    }, tip: 'ctrl+y, ctrl+shift+z' },
+    {
+      label: () => preview ? '编辑' : '预览',
+      icon: () => preview ? 'icon-edit' : 'icon-browse',
+      handler: () => {
+        if (!preview) {
+          methods.clearFocus();
+        }
+        setPreview(!preview);
+      },
+    },
+    {
+      label: '导入',
+      icon: 'icon-import',
+      handler: async () => {
+        // const text = await $$dialog.textarea('', { title: '请输入导入的JSON字符串' });
+        try {
+          // const data = JSON.parse(text || '');
+          // commander.updateValue(data);
+        } catch (err) {
+          console.error(err);
+          notification.open({
+            message: '导入失败！',
+            description: '导入的数据格式不正确，请检查输入！'
+          })
+        }
+      },
+    },
+    {
+      label: '导出',
+      icon: 'icon-export',
+      handler: () => {
+        // $$dialog.textarea(JSON.stringify(props.value), { editReadOnly: true, title: '导出JSON数据' });
+      },
+    },
+    { label: '置顶', icon: 'icon-place-top', handler: () => {
+      // commander.placeTop();
+    }, tip: 'ctrl+up' },
+    { label: '置底', icon: 'icon-place-bottom', handler: () => {
+      // commander.placeBottom();
+    }, tip: 'ctrl+down' },
+    { label: '删除', icon: 'icon-delete', handler: () => {
+      // commander.delete();
+    }, tip: 'ctrl+d, backspace, delete' },
+    { label: '清空', icon: 'icon-reset', handler: () => {
+      // commander.clear();
+    } },
+    {
+      label: '关闭',
+      icon: 'icon-close',
+      handler: () => {
+        methods.clearFocus();
+        setEditing(false);
+      },
+    },
+  ];
 
   return (
     <div className="visual-editor">
@@ -212,7 +283,20 @@ export const VisualEditor: React.FC<{
           )
         )}
       </div>
-      <div className="visual-editor-head">head</div>
+      <div className="visual-editor-head">
+        {
+          buttons.map((btn, index) => {
+            const label = typeof btn.label === 'function' ? btn.label() : btn.label;
+            const icon = typeof btn.icon === 'function' ? btn.icon() : btn.icon;
+            return (
+              <div className="visual-editor-head-button" key={index}>
+                <i className={`iconfont ${icon}`} />
+                <span>{label}</span>
+              </div>
+            )
+          })
+        }
+      </div>
       <div className="visual-editor-operator">operator</div>
       <div className="visual-editor-body">
         <div
