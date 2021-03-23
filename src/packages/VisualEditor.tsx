@@ -21,7 +21,7 @@ export const VisualEditor: React.FC<{
       width: `${props.value.container.width}px`,
       height: `${props.value.container.height}px`,
     }),
-    [props.value.container.width, props.value.container.height]
+    [JSON.stringify(props.value.container)]
   );
   // 计算当前编辑的数据中，哪些block是被选中的，哪些是未选中的
   const focusData = useMemo(() => {
@@ -54,7 +54,7 @@ export const VisualEditor: React.FC<{
       methods.updateBlocks(props.value.blocks);
     },
   };
-  // 拖拽block的处理
+  // 拖拽菜单block的处理
   const menuDraggier = (() => {
     const dragData = useRef({
       dragComponent: null as null | VisualEditorCompnent,
@@ -120,7 +120,7 @@ export const VisualEditor: React.FC<{
 
     return block;
   })();
-  // 选中block的处理
+  // 选中容器中block的处理
   const focusHandler = (() => {
     const mousedownBlock = (e: React.MouseEvent<HTMLDivElement>, block: VisualEditorBlock) => {
       if (e.shiftKey) {
@@ -138,6 +138,7 @@ export const VisualEditor: React.FC<{
           methods.clearFocus(block);
         }
       }
+      setTimeout(() => blockDraggier.mousedown(e), 0);
     };
     const mousedownContainer = (e: React.MouseEvent<HTMLDivElement>) => {
       if (e.target !== e.currentTarget) {
@@ -151,6 +152,44 @@ export const VisualEditor: React.FC<{
       block: mousedownBlock,
       container: mousedownContainer,
     };
+  })();
+  // 拖拽容器中的block的处理
+  const blockDraggier = (() => {
+    const dragData = useRef({
+      startX: 0, // 拖拽开始时，鼠标的left
+      startY: 0, // 拖拽开始时，鼠标的top
+      startPosArray: [] as { top: number, left: number }[], // 拖拽开始时，所有选中的block的top及left
+    });
+
+    const mousedown = useCallbackRef((e: React.MouseEvent<HTMLDivElement>) => {
+      document.addEventListener('mousemove', mousemove);
+      document.addEventListener('mouseup', mouseup);
+      dragData.current = {
+        startX: e.clientX,
+        startY: e.clientY,
+        startPosArray: focusData.focus.map(({ top, left }) => ({ top, left })),
+      }
+    });
+
+    const mousemove = useCallbackRef((e: MouseEvent) => {
+      const { startX, startY, startPosArray } = dragData.current;
+      const { clientX: moveX, clientY: moveY } = e;
+      const durX = moveX - startX;
+      const durY = moveY - startY;
+      focusData.focus.forEach((block: VisualEditorBlock, index: number) => {
+        const { top, left } = startPosArray[index];
+        block.top = top + durY;
+        block.left = left + durX;
+      });
+      methods.updateBlocks(props.value.blocks);
+    });
+
+    const mouseup = useCallbackRef((e: MouseEvent) => {
+      document.removeEventListener('mousemove', mousemove);
+      document.removeEventListener('mouseup', mouseup);
+    });
+
+    return { mousedown };
   })();
 
   return (
