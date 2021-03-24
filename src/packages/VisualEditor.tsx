@@ -8,7 +8,7 @@ import {
   VisualEditorBlock,
 } from "./VisualEditor.utils";
 import { VisualEditorBlocks } from "./VisualEditorBlock";
-import { notification } from "antd";
+import { notification, Tooltip } from "antd";
 import { useVisualEditorCommand } from './VisualEditor.commander';
 import "./VisualEditor.scss";
 
@@ -208,12 +208,8 @@ export const VisualEditor: React.FC<{
     tip?: string | (() => string),
     handler: () => void,
   }[] = [
-    { label: '撤销', icon: 'icon-back', handler: () => {
-      // commander.undo()
-    }, tip: 'ctrl+z' },
-    { label: '重做', icon: 'icon-forward', handler: () => {
-      // commander.redo()
-    }, tip: 'ctrl+y, ctrl+shift+z' },
+    { label: '撤销', icon: 'icon-back', handler: commander.undo, tip: 'ctrl+z' },
+    { label: '重做', icon: 'icon-forward', handler: commander.redo, tip: 'ctrl+y, ctrl+shift+z' },
     {
       label: () => preview ? '编辑' : '预览',
       icon: () => preview ? 'icon-edit' : 'icon-browse',
@@ -254,7 +250,7 @@ export const VisualEditor: React.FC<{
     { label: '置底', icon: 'icon-place-bottom', handler: () => {
       // commander.placeBottom();
     }, tip: 'ctrl+down' },
-    { label: '删除', icon: 'icon-delete', handler: commander.delete, tip: 'ctrl+d, backspace, delete' },
+    { label: '删除', icon: 'icon-delete', handler: () => commander.delete(), tip: 'ctrl+d, backspace, delete' },
     { label: '清空', icon: 'icon-reset', handler: () => {
       // commander.clear();
     } },
@@ -293,12 +289,15 @@ export const VisualEditor: React.FC<{
           buttons.map((btn, index) => {
             const label = typeof btn.label === 'function' ? btn.label() : btn.label;
             const icon = typeof btn.icon === 'function' ? btn.icon() : btn.icon;
-            return (
-              <div className="visual-editor-head-button" key={index}>
+            const content = (
+              <div className="visual-editor-head-button" key={index} onClick={btn.handler}>
                 <i className={`iconfont ${icon}`} />
                 <span>{label}</span>
               </div>
             )
+            return !btn.tip ? content : <Tooltip key={index} placement="bottom" title={btn.tip}>
+              {content}
+            </Tooltip>
           })
         }
       </div>
