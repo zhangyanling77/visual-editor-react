@@ -9,7 +9,9 @@ import {
 } from "./VisualEditor.utils";
 import { VisualEditorBlocks } from "./VisualEditorBlock";
 import { notification, Tooltip } from "antd";
+import { MenuOutlined } from "@ant-design/icons";
 import { useVisualEditorCommand } from './VisualEditor.commander';
+import { createEvent } from "./plugin/event";
 import "./VisualEditor.scss";
 
 export const VisualEditor: React.FC<{
@@ -19,6 +21,8 @@ export const VisualEditor: React.FC<{
 }> = (props) => {
   const [preview, setPreview] = useState(false); // 当前是画布否为预览状态
   const [editing, setEditing] = useState(false); // 当前画布是否为编辑状态
+  const [dragstart] = useState(() => createEvent());
+  const [dragend] = useState(() => createEvent());
   // 设置画布的宽高
   const containerStyles = useMemo(
     () => ({
@@ -200,6 +204,8 @@ export const VisualEditor: React.FC<{
     value: props.value,
     focusData,
     updateBlocks: methods.updateBlocks,
+    dragstart,
+    dragend,
   });
   // 操作按钮
   const buttons: {
@@ -251,9 +257,7 @@ export const VisualEditor: React.FC<{
       // commander.placeBottom();
     }, tip: 'ctrl+down' },
     { label: '删除', icon: 'icon-delete', handler: () => commander.delete(), tip: 'ctrl+d, backspace, delete' },
-    { label: '清空', icon: 'icon-reset', handler: () => {
-      // commander.clear();
-    } },
+    { label: '清空', icon: 'icon-reset', handler: () => commander.clear() },
     {
       label: '关闭',
       icon: 'icon-close',
@@ -267,6 +271,10 @@ export const VisualEditor: React.FC<{
   return (
     <div className="visual-editor">
       <div className="visual-editor-menu">
+        <div className="visual-editor-menu-title">
+          <MenuOutlined />
+          <span>组件总览</span>
+        </div>
         {props.config.componentArray.map(
           (component: VisualEditorCompnent, index: number) => (
             <div
