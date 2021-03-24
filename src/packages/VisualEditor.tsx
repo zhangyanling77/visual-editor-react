@@ -85,6 +85,7 @@ export const VisualEditor: React.FC<{
           containerRef.current.addEventListener("drop", container.drop);
           // 记录拖拽的是哪一个组件
           dragData.current.dragComponent = dragComponent;
+          dragstart.emit();
         }
       ),
       dragend: useCallbackRef((e: React.DragEvent<HTMLDivElement>) => {
@@ -112,17 +113,15 @@ export const VisualEditor: React.FC<{
         (e: DragEvent) => (e.dataTransfer!.dropEffect = "none")
       ),
       drop: useCallbackRef((e: DragEvent) => {
-        props.onChange({
-          ...props.value,
-          blocks: [
-            ...props.value.blocks,
-            createVisualBlock({
-              top: e.offsetY,
-              left: e.offsetX,
-              component: dragData.current.dragComponent!,
-            }),
-          ],
-        });
+        methods.updateBlocks([
+          ...props.value.blocks,
+          createVisualBlock({
+            top: e.offsetY,
+            left: e.offsetX,
+            component: dragData.current.dragComponent!,
+          }),
+        ]);
+        setTimeout(() => dragend.emit());
       }),
     };
 
@@ -167,6 +166,7 @@ export const VisualEditor: React.FC<{
       startX: 0, // 拖拽开始时，鼠标的left
       startY: 0, // 拖拽开始时，鼠标的top
       startPosArray: [] as { top: number, left: number }[], // 拖拽开始时，所有选中的block的top及left
+      dragging: false, // 当前是否处于拖拽状态
     });
 
     const mousedown = useCallbackRef((e: React.MouseEvent<HTMLDivElement>) => {
@@ -176,10 +176,15 @@ export const VisualEditor: React.FC<{
         startX: e.clientX,
         startY: e.clientY,
         startPosArray: focusData.focus.map(({ top, left }) => ({ top, left })),
+        dragging: false,
       }
     });
 
     const mousemove = useCallbackRef((e: MouseEvent) => {
+      if (!dragData.current.dragging) {
+        dragData.current.dragging = true;
+        dragstart.emit();
+      }
       const { startX, startY, startPosArray } = dragData.current;
       const { clientX: moveX, clientY: moveY } = e;
       const durX = moveX - startX;
@@ -195,6 +200,9 @@ export const VisualEditor: React.FC<{
     const mouseup = useCallbackRef((e: MouseEvent) => {
       document.removeEventListener('mousemove', mousemove);
       document.removeEventListener('mouseup', mouseup);
+      if (dragData.current.dragging) {
+        dragend.emit();
+      }
     });
 
     return { mousedown };
