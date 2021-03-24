@@ -21,20 +21,26 @@ export function useVisualEditorCommand({
     name: "delete",
     keyboard: ["delete", "ctrl+d", "backspace"],
     execute() {
-      const before = deepcopy(value.blocks);
-      const after = deepcopy(focusData.unFocus);
+      const data = {
+        before: deepcopy(value.blocks),
+        after: deepcopy(focusData.unFocus),
+      };
       return {
         redo: () => {
-          updateBlocks(deepcopy(after));
+          updateBlocks(deepcopy(data.after));
         },
         undo: () => {
-          updateBlocks(deepcopy(before));
+          updateBlocks(deepcopy(data.before));
         },
       };
     },
   });
 
+  commander.useInit();
+
   return {
+    undo: () => commander.state.commands.undo(),
+    redo: () => commander.state.commands.redo(),
     delete: () => commander.state.commands.delete(),
   }
 }
