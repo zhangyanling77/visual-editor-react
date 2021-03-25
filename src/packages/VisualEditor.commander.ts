@@ -71,6 +71,7 @@ export function useVisualEditorCommand({
           before: deepcopy(dragData.current.before!),
           after: deepcopy(value.blocks),
         };
+        console.log('drag data: ', data)
         return {
           redo: () => {
             updateBlocks(deepcopy(data.after));

@@ -102,7 +102,7 @@ export const VisualEditor: React.FC<{
           container.dragleave
         );
         containerRef.current.removeEventListener("drop", container.drop);
-        dragData.current.dragComponent = null
+        dragData.current.dragComponent = null;
       }),
     };
     const container = {
