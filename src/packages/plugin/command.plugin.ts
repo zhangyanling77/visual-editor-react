@@ -135,7 +135,7 @@ export function useCommander() {
   }, []);
 
   useEffect(() => {
-    return state.destroyList.forEach(fn => !!fn && fn());
+    return () => state.destroyList.forEach(fn => !!fn && fn());
   }, []);
 
   return {
