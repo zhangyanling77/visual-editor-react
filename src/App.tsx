@@ -11,27 +11,27 @@ function App() {
       height: 600,
     },
     blocks: [
-      {
-        componentKey: 'text',
-        top: 100,
-        left: 100,
-        adjustPosition: false,
-        focus: false,
-      },
-      {
-        componentKey: 'button',
-        top: 200,
-        left: 200,
-        adjustPosition: false,
-        focus: false,
-      },
-      {
-        componentKey: 'input',
-        top: 300,
-        left: 300,
-        adjustPosition: false,
-        focus: false,
-      },
+      // {
+      //   componentKey: 'text',
+      //   top: 100,
+      //   left: 100,
+      //   adjustPosition: false,
+      //   focus: false,
+      // },
+      // {
+      //   componentKey: 'button',
+      //   top: 200,
+      //   left: 200,
+      //   adjustPosition: false,
+      //   focus: false,
+      // },
+      // {
+      //   componentKey: 'input',
+      //   top: 300,
+      //   left: 300,
+      //   adjustPosition: false,
+      //   focus: false,
+      // },
     ],
   })
   return (

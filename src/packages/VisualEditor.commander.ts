@@ -102,6 +102,21 @@ export function useVisualEditorCommand({
     },
   });
 
+  /** 全选命令 */
+  commander.useRegistry({
+    name: 'selectAll',
+    keyboard: ['ctrl+a'],
+    followQueue: false,
+    execute: () => {
+      return {
+        redo: () => {
+          value.blocks.forEach(block => block.focus = true);
+          updateBlocks(deepcopy(value.blocks));
+        },
+      }
+    },
+  });
+
   commander.useInit();
 
   return {
