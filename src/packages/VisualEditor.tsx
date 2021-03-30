@@ -233,8 +233,8 @@ export const VisualEditor: React.FC<{
     tip?: string | (() => string),
     handler: () => void,
   }[] = [
-    { label: '撤销', icon: 'icon-back', handler: commander.undo, tip: 'ctrl+z' },
-    { label: '重做', icon: 'icon-forward', handler: commander.redo, tip: 'ctrl+y, ctrl+shift+z' },
+    { label: '撤销', icon: 'icon-back', handler: preview ? () => {} : commander.undo, tip: 'ctrl+z' },
+    { label: '重做', icon: 'icon-forward', handler: preview ? () => {} : commander.redo, tip: 'ctrl+y, ctrl+shift+z' },
     {
       label: () => preview ? '编辑' : '预览',
       icon: () => preview ? 'icon-edit' : 'icon-browse',
@@ -269,10 +269,10 @@ export const VisualEditor: React.FC<{
         // $$dialog.textarea(JSON.stringify(props.value), { editReadOnly: true, title: '导出JSON数据' });
       },
     },
-    { label: '置顶', icon: 'icon-place-top', handler: () => commander.placeTop(), tip: 'ctrl+up' },
-    { label: '置底', icon: 'icon-place-bottom', handler: () => commander.placeBottom(), tip: 'ctrl+down' },
-    { label: '删除', icon: 'icon-delete', handler: () => commander.delete(), tip: 'ctrl+d, backspace, delete' },
-    { label: '清空', icon: 'icon-reset', handler: () => commander.clear() },
+    { label: '置顶', icon: 'icon-place-top', handler: commander.placeTop, tip: 'ctrl+up' },
+    { label: '置底', icon: 'icon-place-bottom', handler: commander.placeBottom, tip: 'ctrl+down' },
+    { label: '删除', icon: 'icon-delete', handler: commander.delete, tip: 'ctrl+d, backspace, delete' },
+    { label: '清空', icon: 'icon-reset', handler: preview ? () => {} : commander.clear },
     {
       label: '关闭',
       icon: 'icon-close',
