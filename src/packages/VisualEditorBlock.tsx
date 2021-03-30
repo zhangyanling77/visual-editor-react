@@ -15,6 +15,7 @@ export const VisualEditorBlocks: React.FC<{
       top: `${props.block.top}px`,
       left: `${props.block.left}px`,
       opacity: props.block.adjustPosition ? "0" : "", // 为了防止电脑性能差出现闪一下再调整位置的情况
+      zIndex: props.block.zIndex,
     }),
     [JSON.stringify(props.block)]
   );
