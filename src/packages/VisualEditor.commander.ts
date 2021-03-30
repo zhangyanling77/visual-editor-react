@@ -117,6 +117,61 @@ export function useVisualEditorCommand({
     },
   });
 
+  /** 置顶命令 */
+  commander.useRegistry({
+    name: 'placeTop',
+    keyboard: 'ctrl+up',
+    execute: () => {
+      const data = {
+        before: deepcopy(value.blocks),
+        after: deepcopy((() => {
+          const { focus, unFocus } = focusData;
+          const maxZIndex = unFocus.reduce((prev, block) => Math.max(prev, block.zIndex), -Infinity) + 1;
+          focus.forEach(block => block.zIndex = maxZIndex);
+          return value.blocks;
+        })()),
+      };
+      return {
+        redo: () => {
+          updateBlocks(deepcopy(data.after));
+        },
+        undo: () => {
+          updateBlocks(deepcopy(data.before));
+        },
+      }
+    },
+  });
+
+  /** 置底命令 */
+  commander.useRegistry({
+    name: 'placeBottom',
+    keyboard: 'ctrl+down',
+    execute: () => {
+      const data = {
+        before: deepcopy(value.blocks),
+        after: deepcopy((() => {
+          const { focus, unFocus } = focusData;
+          let minZIndex = unFocus.reduce((prev, block) => Math.min(prev, block.zIndex), Infinity) - 1;
+          if (minZIndex < 0) {
+            const dur = Math.abs(minZIndex);
+            unFocus.forEach(block => block.zIndex += dur);
+            minZIndex = 0;
+          }
+          focus.forEach(block => block.zIndex = minZIndex);
+          return deepcopy(value.blocks);
+        })()),
+      }
+      return {
+        redo: () => {
+          updateBlocks(deepcopy(data.after));
+        },
+        undo: () => {
+          updateBlocks(deepcopy(data.before));
+        },
+      }
+    },
+  });
+
   commander.useInit();
 
   return {
@@ -124,5 +179,7 @@ export function useVisualEditorCommand({
     redo: () => commander.state.commands.redo(),
     delete: () => commander.state.commands.delete(),
     clear: () => commander.state.commands.clear(),
+    placeTop: () => commander.state.commands.placeTop(),
+    placeBottom: () => commander.state.commands.placeBottom(),
   }
 }
