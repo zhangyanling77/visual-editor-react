@@ -5,6 +5,7 @@ export interface VisualEditorBlock {
   left: number, // block元素的left定位
   adjustPosition: boolean, // block元素是否需要调整位置
   focus: boolean, // block当前是否被选中
+  zIndex: number, // block元素的zIndex(style属性)
 }
 /* 编辑器编辑的数据类型 */
 export interface VisualEditorValue {
@@ -37,6 +38,7 @@ export function createVisualBlock({
     left,
     adjustPosition: true,
     focus: false,
+    zIndex: 0,
   }
 }
 
