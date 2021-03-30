@@ -12,6 +12,7 @@ import { notification, Tooltip } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import { useVisualEditorCommand } from './VisualEditor.commander';
 import { createEvent } from "./plugin/event";
+import classNames from "classnames";
 import "./VisualEditor.scss";
 
 export const VisualEditor: React.FC<{
@@ -31,6 +32,13 @@ export const VisualEditor: React.FC<{
     }),
     [JSON.stringify(props.value.container)]
   );
+  // 整个编辑器的计算样式
+  const classes = useMemo(() => classNames([
+    'visual-editor',
+    {
+      'visual-editor-preview': preview,
+    }
+  ]), [preview]);
   // 计算当前编辑的数据中，哪些block是被选中的，哪些是未选中的
   const focusData = useMemo(() => {
     const focus: VisualEditorBlock[] = [];
@@ -131,6 +139,7 @@ export const VisualEditor: React.FC<{
   // 选中容器中block的处理
   const focusHandler = (() => {
     const mousedownBlock = (e: React.MouseEvent<HTMLDivElement>, block: VisualEditorBlock) => {
+      if (preview) return;
       if (e.shiftKey) {
         // 如果按住了shift键，此时没有选中block，就选中该block，否则让这个block的选中状态取反
         if (focusData.focus.length <= 1) {
@@ -149,6 +158,7 @@ export const VisualEditor: React.FC<{
       setTimeout(() => blockDraggier.mousedown(e), 0);
     };
     const mousedownContainer = (e: React.MouseEvent<HTMLDivElement>) => {
+      if (preview) return;
       if (e.target !== e.currentTarget) {
         return;
       }
@@ -274,7 +284,7 @@ export const VisualEditor: React.FC<{
   ];
 
   return (
-    <div className="visual-editor">
+    <div className={classes}>
       <div className="visual-editor-menu">
         <div className="visual-editor-menu-title">
           <MenuOutlined />
