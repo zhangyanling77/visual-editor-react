@@ -17,6 +17,7 @@ function App() {
       //   left: 100,
       //   adjustPosition: false,
       //   focus: false,
+      //   zIndex: 0,
       // },
       // {
       //   componentKey: 'button',
@@ -24,6 +25,7 @@ function App() {
       //   left: 200,
       //   adjustPosition: false,
       //   focus: false,
+      //   zIndex: 0,
       // },
       // {
       //   componentKey: 'input',
@@ -31,6 +33,7 @@ function App() {
       //   left: 300,
       //   adjustPosition: false,
       //   focus: false,
+      //   zIndex: 0,
       // },
     ],
   })
