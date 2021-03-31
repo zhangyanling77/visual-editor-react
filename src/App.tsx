@@ -2,13 +2,12 @@ import { useState } from 'react';
 import { VisualEditor} from './packages/VisualEditor';
 import { visualConfig } from './visual.config';
 import { VisualEditorValue } from './packages/VisualEditor.utils';
-import './App.scss';
 
 function App() {
   const [editorValue, setEditorValue] = useState<VisualEditorValue>({
     container: {
-      width: 1000,
-      height: 600,
+      width: 1200,
+      height: 800,
     },
     blocks: [
       // {
