@@ -1,25 +1,36 @@
 // @ts-ignore
 import reactRefresh from '@vitejs/plugin-react-refresh';
 import { defineConfig } from 'vite';
+import vitePluginImp from 'vite-plugin-imp'; // 按需引入
 
 const path = require('path');
 
 export default defineConfig({
   base: '/visual-editor',
   build: {
-    outDir: 'docs',
+    outDir: 'dist',
   },
   optimizeDeps: {
     include: []
   },
-  plugins: [reactRefresh()],
+  plugins: [
+    reactRefresh(),
+    vitePluginImp({
+      libList: [
+        {
+          libName: "antd",
+          style: (name) => `antd/lib/${name}/style/index.less`,
+        },
+      ],
+    }),
+  ],
   esbuild: {
     jsxInject: "import React from 'react'",
   },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
-    }
+    },
   },
   css: {
     preprocessorOptions: {
@@ -34,7 +45,7 @@ export default defineConfig({
       scss: {
         // 自动导入全局样式
         additionalData: "@import '@/styles/base.scss';", 
-      }
+      },
     },
   },
 });
