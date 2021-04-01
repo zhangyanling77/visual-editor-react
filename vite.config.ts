@@ -33,7 +33,7 @@ export default defineConfig({
       },
       scss: {
         // 自动导入全局样式
-        additionalData: "@import '@/base.scss';", 
+        additionalData: "@import '@/styles/base.scss';", 
       }
     },
   },
