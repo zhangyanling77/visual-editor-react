@@ -6,7 +6,7 @@ import vitePluginImp from 'vite-plugin-imp'; // 按需引入
 const path = require('path');
 
 export default defineConfig({
-  base: '/visual-editor',
+  base: '/visual-editor/',
   build: {
     outDir: 'dist',
   },
