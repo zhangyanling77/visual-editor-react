@@ -14,10 +14,6 @@ $primary: #eb2f96; // #1890ff; // 主色
 
 $size: 4px;
 
-.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
-  width: unset!important;
-}
-
 .visual-editor {
   position: fixed;
   top: 10px;
@@ -59,7 +55,7 @@ $size: 4px;
         align-items: center;
         background-color: $primary;
         color: white;
-        padding: 8px 16px;
+        padding: 4px 15px;
         cursor: pointer;
         position: relative;
         transition: all linear 0.1s;
@@ -67,7 +63,6 @@ $size: 4px;
 
         &>span {
           font-size: 12px;
-          margin-top: 4px;
         }
 
         &:not(:last-child) {
