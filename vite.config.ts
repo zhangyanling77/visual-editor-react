@@ -1,7 +1,7 @@
 // @ts-ignore
 import reactRefresh from '@vitejs/plugin-react-refresh';
 import { defineConfig } from 'vite';
-import vitePluginImp from 'vite-plugin-imp'; // 按需引入
+// import vitePluginImp from 'vite-plugin-imp'; // 按需引入
 
 const path = require('path');
 
@@ -15,14 +15,14 @@ export default defineConfig({
   },
   plugins: [
     reactRefresh(),
-    vitePluginImp({
-      libList: [
-        {
-          libName: "antd",
-          style: (name) => `antd/lib/${name}/style/index.less`,
-        },
-      ],
-    }),
+    // vitePluginImp({
+    //   libList: [
+    //     {
+    //       libName: "antd",
+    //       style: (name) => `antd/lib/${name}/style/index.less`,
+    //     },
+    //   ],
+    // }),
   ],
   esbuild: {
     jsxInject: "import React from 'react'",
