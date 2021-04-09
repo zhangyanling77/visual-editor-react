@@ -8,7 +8,7 @@ const path = require('path');
 export default defineConfig({
   base: '/visual-editor-react/',
   build: {
-    outDir: 'dist',
+    outDir: 'public',
   },
   optimizeDeps: {
     include: []
