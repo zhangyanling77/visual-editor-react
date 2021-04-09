@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build"
+    "build": "tsc && vite build",
+    "preview": "vite preview --port 8080"
   },
   "dependencies": {
     "@ant-design/icons": "^4.5.0",
