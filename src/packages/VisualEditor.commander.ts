@@ -6,6 +6,7 @@ import { useCallbackRef } from "./hook/useCallbackRef";
 
 export function useVisualEditorCommand({
   focusData,
+  onChange,
   value,
   updateBlocks,
   dragstart,
@@ -15,6 +16,7 @@ export function useVisualEditorCommand({
     focus: VisualEditorBlock[];
     unFocus: VisualEditorBlock[];
   },
+  onChange: (val: VisualEditorValue) => void,
   value: VisualEditorValue,
   updateBlocks: (blocks: VisualEditorBlock[]) => void,
   dragstart: { on: (cb: () => void) => void, off: (cb: () => void) => void },
@@ -172,6 +174,29 @@ export function useVisualEditorCommand({
     },
   });
 
+  /** 更新值 */
+  commander.useRegistry({
+    name: 'updateValue',
+    execute: (newModelValue: VisualEditorValue) => {
+      const data: { before: undefined | VisualEditorValue, after: undefined | VisualEditorValue } = {
+        before: undefined,
+        after: undefined,
+      };
+      return {
+        redo: () => {
+          if (!data.before && !data.after) {
+            data.before = deepcopy(value);
+            onChange(deepcopy(newModelValue));
+            data.after = deepcopy(newModelValue);
+          } else {
+            onChange(deepcopy(data.after!));
+          }
+        },
+        undo: () => onChange(deepcopy(data.before!)),
+      }
+    },
+  });
+
   commander.useInit();
 
   return {
@@ -181,5 +206,6 @@ export function useVisualEditorCommand({
     clear: () => commander.state.commands.clear(),
     placeTop: () => commander.state.commands.placeTop(),
     placeBottom: () => commander.state.commands.placeBottom(),
+    updateValue: (newModelValue: VisualEditorValue) => commander.state.commands.updateValue(newModelValue),
   }
 }
