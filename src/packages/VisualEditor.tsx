@@ -223,6 +223,7 @@ export const VisualEditor: React.FC<{
   const commander = useVisualEditorCommand({
     value: props.value,
     focusData,
+    onChange: props.onChange,
     updateBlocks: methods.updateBlocks,
     dragstart,
     dragend,
@@ -250,10 +251,10 @@ export const VisualEditor: React.FC<{
       label: '导入',
       icon: 'icon-import',
       handler: async () => {
-        // const text = await $$dialog.textarea('', { title: '请输入导入的JSON字符串' });
+        const text = await $$dialog.textarea('', { title: '请输入导入的JSON字符串' });
         try {
-          // const data = JSON.parse(text || '');
-          // commander.updateValue(data);
+          const data = JSON.parse(text || '');
+          commander.updateValue(data);
         } catch (err) {
           console.error(err);
           notification.open({
