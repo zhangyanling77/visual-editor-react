@@ -13,6 +13,7 @@ import { MenuOutlined } from "@ant-design/icons";
 import { useVisualEditorCommand } from './VisualEditor.commander';
 import { createEvent } from "./plugin/event";
 import classNames from "classnames";
+import { $$dialog } from './utils/dialog.service';
 import "./VisualEditor.scss";
 
 export const VisualEditor: React.FC<{
@@ -266,7 +267,7 @@ export const VisualEditor: React.FC<{
       label: '导出',
       icon: 'icon-export',
       handler: () => {
-        // $$dialog.textarea(JSON.stringify(props.value), { editReadOnly: true, title: '导出JSON数据' });
+        $$dialog.textarea(JSON.stringify(props.value), { editReadonly: true, title: '导出JSON数据' });
       },
     },
     { label: '置顶', icon: 'icon-place-top', handler: commander.placeTop, tip: 'ctrl+up' },
