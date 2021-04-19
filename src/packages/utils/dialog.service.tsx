@@ -24,7 +24,7 @@ interface DialogServiceOption {
 }
 
 interface DialogServiceInstance {
-  service: (option?: DialogServiceOption) => void,
+  show: (option?: DialogServiceOption) => void,
   close: () => void,
 }
 
@@ -36,13 +36,15 @@ const Component: React.FC<{ option?: DialogServiceOption, onRef?: (ins: DialogSe
   option = option || {};
 
   const methods = {
-    service: (option?: DialogServiceOption) => {
+    show: (option?: DialogServiceOption) => {
       setOption(deepcopy(option || {}));
       setEditValue(!option ? '' : (option.editValue || ''));
       setVisible(true);
     },
     close: () => setVisible(false),
   };
+
+  !!props.onRef && props.onRef(methods);
 
   const handler = {
     onConfirm: () => {
@@ -57,7 +59,7 @@ const Component: React.FC<{ option?: DialogServiceOption, onRef?: (ins: DialogSe
 
   const inputProps = {
     value: editValue,
-    onChange: (e: React.ChangeEvent<any>) => setEditValue(e.target.value),
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setEditValue(e.target.value),
     readOnly: option.editReadonly === true,
   };
 
@@ -67,7 +69,7 @@ const Component: React.FC<{ option?: DialogServiceOption, onRef?: (ins: DialogSe
       closable
       title={option.title || '系统提示'}
       visible={visible}
-      onCancel={option.onCancel}
+      onCancel={handler.onCancel}
       footer={(option.confirmButton || option.cancelButton) ? (
         <>
           {option.cancelButton && <Button onClick={handler.onCancel}>取消</Button>}
@@ -100,7 +102,7 @@ const getInstance = (() => {
 
 const DialogService = (option?: DialogServiceOption) => {
   const ins = getInstance(option);
-  ins.service(option);
+  ins.show(option);
 };
 
 export const $$dialog = Object.assign(DialogService, {
