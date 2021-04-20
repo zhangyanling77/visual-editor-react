@@ -2,8 +2,7 @@
 import reactRefresh from '@vitejs/plugin-react-refresh';
 import { defineConfig } from 'vite';
 // import vitePluginImp from 'vite-plugin-imp'; // 按需引入
-
-const path = require('path');
+import { resolve } from 'path';
 
 export default defineConfig({
   base: '/visual-editor-react/',
@@ -29,7 +28,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      '@': resolve(__dirname, 'src'),
     },
   },
   css: {
