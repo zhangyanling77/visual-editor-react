@@ -5,7 +5,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview --port 8080",
-    "lint:js": "eslint --ext .js,.jsx,.ts,.tsx"
+    "lint-staged:js": "eslint --ext .js,.jsx,.ts,.tsx"
   },
   "husky": {
     "hooks": {
@@ -14,8 +14,8 @@
     }
   },
   "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx}": "npm run lint:js",
-    "src/**/*.{js,jsx,tsx,ts,scss,md,json}": [
+    "src/**/*.{js,jsx,ts,tsx}": "npm run lint-staged:js",
+    "src/**/*.{js,jsx,tsx,ts,scss,json}": [
       "prettier --write"
     ]
   },
