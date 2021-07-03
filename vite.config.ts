@@ -7,7 +7,7 @@ import { resolve } from 'path';
 export default defineConfig({
   base: '/visual-editor-react/',
   build: {
-    outDir: 'public',
+    outDir: 'dist',
   },
   optimizeDeps: {
     include: []
