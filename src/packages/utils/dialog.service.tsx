@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import React, { useState } from 'react';
 import deepcopy from 'deepcopy';
 import { Modal, Button, Input } from 'antd';
 import ReactDOM from 'react-dom';
@@ -11,34 +10,35 @@ export enum DialogServiceEdit {
 }
 
 interface DialogServiceOption {
-  title?: string,
-  message?: string | (() => any),
-  confirmButton?: boolean,
-  cancelButton?: boolean,
-  onConfirm?: (editValue?: string) => void,
-  onCancel?: () => void,
-  editType?: DialogServiceEdit,
-  editValue?: string,
-  editReadonly?: boolean,
-  width?: string,
+  title?: string;
+  message?: string | (() => any);
+  confirmButton?: boolean;
+  cancelButton?: boolean;
+  onConfirm?: (editValue?: string) => void;
+  onCancel?: () => void;
+  editType?: DialogServiceEdit;
+  editValue?: string;
+  editReadonly?: boolean;
+  width?: string;
 }
 
 interface DialogServiceInstance {
-  show: (option?: DialogServiceOption) => void,
-  close: () => void,
+  show: (option?: DialogServiceOption) => void;
+  close: () => void;
 }
 
-const Component: React.FC<{ option?: DialogServiceOption, onRef?: (ins: DialogServiceInstance) => void }> = (props) => {
-  let [option, setOption] = useState(props.option || {});
+const Component: React.FC<{
+  option?: DialogServiceOption;
+  onRef?: (ins: DialogServiceInstance) => void;
+}> = (props) => {
+  const [option, setOption] = useState(props.option || {});
   const [visible, setVisible] = useState(false);
   const [editValue, setEditValue] = useState(option ? option.editValue : '');
-
-  option = option || {};
 
   const methods = {
     show: (option?: DialogServiceOption) => {
       setOption(deepcopy(option || {}));
-      setEditValue(!option ? '' : (option.editValue || ''));
+      setEditValue(!option ? '' : option.editValue || '');
       setVisible(true);
     },
     close: () => setVisible(false),
@@ -59,7 +59,8 @@ const Component: React.FC<{ option?: DialogServiceOption, onRef?: (ins: DialogSe
 
   const inputProps = {
     value: editValue,
-    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setEditValue(e.target.value),
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+      setEditValue(e.target.value),
     readOnly: option.editReadonly === true,
   };
 
@@ -70,22 +71,28 @@ const Component: React.FC<{ option?: DialogServiceOption, onRef?: (ins: DialogSe
       title={option.title || '系统提示'}
       visible={visible}
       onCancel={handler.onCancel}
-      footer={(option.confirmButton || option.cancelButton) ? (
-        <>
-          {option.cancelButton && <Button onClick={handler.onCancel}>取消</Button>}
-          {option.confirmButton && <Button type="primary" onClick={handler.onConfirm}>确定</Button>}
-        </>
-      ) : null}
+      footer={
+        option.confirmButton || option.cancelButton ? (
+          <>
+            {option.cancelButton && (
+              <Button onClick={handler.onCancel}>取消</Button>
+            )}
+            {option.confirmButton && (
+              <Button type="primary" onClick={handler.onConfirm}>
+                确定
+              </Button>
+            )}
+          </>
+        ) : null
+      }
     >
       {option.message}
-      {option.editType === DialogServiceEdit.input && (
-        <Input {...inputProps} />
-      )}
+      {option.editType === DialogServiceEdit.input && <Input {...inputProps} />}
       {option.editType === DialogServiceEdit.textarea && (
         <Input.TextArea {...inputProps} rows={15} />
       )}
     </Modal>
-  )
+  );
 };
 
 const getInstance = (() => {
@@ -94,10 +101,13 @@ const getInstance = (() => {
     if (!ins) {
       const el = document.createElement('div');
       document.body.appendChild(el);
-      ReactDOM.render(<Component option={option} onRef={val => ins = val} />, el)
+      ReactDOM.render(
+        <Component option={option} onRef={(val) => (ins = val)} />,
+        el,
+      );
     }
     return ins!;
-  }
+  };
 })();
 
 const DialogService = (option?: DialogServiceOption) => {
@@ -110,6 +120,19 @@ export const $$dialog = Object.assign(DialogService, {
     const dfd = defer<string | undefined>();
     option = option || {};
     option.editType = DialogServiceEdit.textarea;
+    option.editValue = val;
+    if (option.editReadonly !== true) {
+      option.confirmButton = true;
+      option.cancelButton = true;
+      option.onConfirm = dfd.resolve;
+    }
+    DialogService(option);
+    return dfd.promise;
+  },
+  input: (val?: string, option?: DialogServiceOption) => {
+    const dfd = defer<string | undefined>();
+    option = option || {};
+    option.editType = DialogServiceEdit.input;
     option.editValue = val;
     if (option.editReadonly !== true) {
       option.confirmButton = true;

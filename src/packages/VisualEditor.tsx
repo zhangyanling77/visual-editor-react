@@ -1,20 +1,20 @@
-import { useMemo, useRef, useState } from "react";
-import { useCallbackRef } from "./hook/useCallbackRef";
+import React, { useMemo, useRef, useState } from 'react';
+import { useCallbackRef } from './hook/useCallbackRef';
 import {
   VisualEditorConfig,
   VisualEditorValue,
   VisualEditorCompnent,
   createVisualBlock,
   VisualEditorBlock,
-} from "./VisualEditor.utils";
-import { VisualEditorBlocks } from "./VisualEditorBlock";
-import { notification, Tooltip } from "antd";
-import { MenuOutlined } from "@ant-design/icons";
+} from './VisualEditor.utils';
+import { VisualEditorBlocks } from './VisualEditorBlock';
+import { notification, Tooltip } from 'antd';
+import { MenuOutlined } from '@ant-design/icons';
 import { useVisualEditorCommand } from './VisualEditor.commander';
-import { createEvent } from "./plugin/event";
-import classNames from "classnames";
+import { createEvent } from './plugin/event';
+import classNames from 'classnames';
 import { $$dialog } from './utils/dialog.service';
-import "./VisualEditor.scss";
+import './VisualEditor.scss';
 
 export const VisualEditor: React.FC<{
   value: VisualEditorValue;
@@ -31,15 +31,19 @@ export const VisualEditor: React.FC<{
       width: `${props.value.container.width}px`,
       height: `${props.value.container.height}px`,
     }),
-    [JSON.stringify(props.value.container)]
+    [JSON.stringify(props.value.container)],
   );
   // 整个编辑器的计算样式
-  const classes = useMemo(() => classNames([
-    'visual-editor',
-    {
-      'visual-editor-preview': preview,
-    }
-  ]), [preview]);
+  const classes = useMemo(
+    () =>
+      classNames([
+        'visual-editor',
+        {
+          'visual-editor-preview': preview,
+        },
+      ]),
+    [preview],
+  );
   // 计算当前编辑的数据中，哪些block是被选中的，哪些是未选中的
   const focusData = useMemo(() => {
     const focus: VisualEditorBlock[] = [];
@@ -62,7 +66,7 @@ export const VisualEditor: React.FC<{
     },
     // 清空选中的元素
     clearFocus: (external?: VisualEditorBlock) => {
-      (!!external
+      (external
         ? focusData.focus.filter((item) => item !== external)
         : focusData.focus
       ).forEach((block) => {
@@ -80,47 +84,47 @@ export const VisualEditor: React.FC<{
       dragstart: useCallbackRef(
         (
           e: React.DragEvent<HTMLDivElement>,
-          dragComponent: VisualEditorCompnent
+          dragComponent: VisualEditorCompnent,
         ) => {
           containerRef.current.addEventListener(
-            "dragenter",
-            container.dragenter
+            'dragenter',
+            container.dragenter,
           );
-          containerRef.current.addEventListener("dragover", container.dragover);
+          containerRef.current.addEventListener('dragover', container.dragover);
           containerRef.current.addEventListener(
-            "dragleave",
-            container.dragleave
+            'dragleave',
+            container.dragleave,
           );
-          containerRef.current.addEventListener("drop", container.drop);
+          containerRef.current.addEventListener('drop', container.drop);
           // 记录拖拽的是哪一个组件
           dragData.current.dragComponent = dragComponent;
           dragstart.emit();
-        }
+        },
       ),
       dragend: useCallbackRef((e: React.DragEvent<HTMLDivElement>) => {
         containerRef.current.removeEventListener(
-          "dragenter",
-          container.dragenter
+          'dragenter',
+          container.dragenter,
         );
         containerRef.current.removeEventListener(
-          "dragover",
-          container.dragover
+          'dragover',
+          container.dragover,
         );
         containerRef.current.removeEventListener(
-          "dragleave",
-          container.dragleave
+          'dragleave',
+          container.dragleave,
         );
-        containerRef.current.removeEventListener("drop", container.drop);
+        containerRef.current.removeEventListener('drop', container.drop);
         dragData.current.dragComponent = null;
       }),
     };
     const container = {
       dragenter: useCallbackRef(
-        (e: DragEvent) => (e.dataTransfer!.dropEffect = "move")
+        (e: DragEvent) => (e.dataTransfer!.dropEffect = 'move'),
       ),
       dragover: useCallbackRef((e: DragEvent) => e.preventDefault()),
       dragleave: useCallbackRef(
-        (e: DragEvent) => (e.dataTransfer!.dropEffect = "none")
+        (e: DragEvent) => (e.dataTransfer!.dropEffect = 'none'),
       ),
       drop: useCallbackRef((e: DragEvent) => {
         methods.updateBlocks([
@@ -139,7 +143,10 @@ export const VisualEditor: React.FC<{
   })();
   // 选中容器中block的处理
   const focusHandler = (() => {
-    const mousedownBlock = (e: React.MouseEvent<HTMLDivElement>, block: VisualEditorBlock) => {
+    const mousedownBlock = (
+      e: React.MouseEvent<HTMLDivElement>,
+      block: VisualEditorBlock,
+    ) => {
       if (preview) return;
       if (e.shiftKey) {
         // 如果按住了shift键，此时没有选中block，就选中该block，否则让这个block的选中状态取反
@@ -177,7 +184,7 @@ export const VisualEditor: React.FC<{
     const dragData = useRef({
       startX: 0, // 拖拽开始时，鼠标的left
       startY: 0, // 拖拽开始时，鼠标的top
-      startPosArray: [] as { top: number, left: number }[], // 拖拽开始时，所有选中的block的top及left
+      startPosArray: [] as { top: number; left: number }[], // 拖拽开始时，所有选中的block的top及left
       dragging: false, // 当前是否处于拖拽状态
     });
 
@@ -189,7 +196,7 @@ export const VisualEditor: React.FC<{
         startY: e.clientY,
         startPosArray: focusData.focus.map(({ top, left }) => ({ top, left })),
         dragging: false,
-      }
+      };
     });
 
     const mousemove = useCallbackRef((e: MouseEvent) => {
@@ -230,16 +237,26 @@ export const VisualEditor: React.FC<{
   });
   // 操作按钮
   const buttons: {
-    label: string | (() => string),
-    icon: string | (() => string),
-    tip?: string | (() => string),
-    handler: () => void,
+    label: string | (() => string);
+    icon: string | (() => string);
+    tip?: string | (() => string);
+    handler: () => void;
   }[] = [
-    { label: '撤销', icon: 'icon-back', handler: preview ? () => {} : commander.undo, tip: 'ctrl+z' },
-    { label: '重做', icon: 'icon-forward', handler: preview ? () => {} : commander.redo, tip: 'ctrl+y, ctrl+shift+z' },
     {
-      label: () => preview ? '编辑' : '预览',
-      icon: () => preview ? 'icon-edit' : 'icon-browse',
+      label: '撤销',
+      icon: 'icon-back',
+      handler: preview ? () => {} : commander.undo,
+      tip: 'ctrl+z',
+    },
+    {
+      label: '重做',
+      icon: 'icon-forward',
+      handler: preview ? () => {} : commander.redo,
+      tip: 'ctrl+y, ctrl+shift+z',
+    },
+    {
+      label: () => (preview ? '编辑' : '预览'),
+      icon: () => (preview ? 'icon-edit' : 'icon-browse'),
       handler: () => {
         if (!preview) {
           methods.clearFocus();
@@ -251,7 +268,9 @@ export const VisualEditor: React.FC<{
       label: '导入',
       icon: 'icon-import',
       handler: async () => {
-        const text = await $$dialog.textarea('', { title: '请输入导入的JSON字符串' });
+        const text = await $$dialog.textarea('', {
+          title: '请输入导入的JSON字符串',
+        });
         try {
           const data = JSON.parse(text || '');
           commander.updateValue(data);
@@ -259,8 +278,8 @@ export const VisualEditor: React.FC<{
           console.error(err);
           notification.open({
             message: '导入失败！',
-            description: '导入的数据格式不正确，请检查输入！'
-          })
+            description: '导入的数据格式不正确，请检查输入！',
+          });
         }
       },
     },
@@ -268,13 +287,35 @@ export const VisualEditor: React.FC<{
       label: '导出',
       icon: 'icon-export',
       handler: () => {
-        $$dialog.textarea(JSON.stringify(props.value), { editReadonly: true, title: '导出JSON数据' });
+        $$dialog.textarea(JSON.stringify(props.value, null, 2), {
+          editReadonly: true,
+          title: '导出JSON数据',
+        });
       },
     },
-    { label: '置顶', icon: 'icon-place-top', handler: commander.placeTop, tip: 'ctrl+up' },
-    { label: '置底', icon: 'icon-place-bottom', handler: commander.placeBottom, tip: 'ctrl+down' },
-    { label: '删除', icon: 'icon-delete', handler: commander.delete, tip: 'ctrl+d, backspace, delete' },
-    { label: '清空', icon: 'icon-reset', handler: preview ? () => {} : commander.clear },
+    {
+      label: '置顶',
+      icon: 'icon-place-top',
+      handler: commander.placeTop,
+      tip: 'ctrl+up',
+    },
+    {
+      label: '置底',
+      icon: 'icon-place-bottom',
+      handler: commander.placeBottom,
+      tip: 'ctrl+down',
+    },
+    {
+      label: '删除',
+      icon: 'icon-delete',
+      handler: commander.delete,
+      tip: 'ctrl+d, backspace, delete',
+    },
+    {
+      label: '清空',
+      icon: 'icon-reset',
+      handler: preview ? () => {} : commander.clear,
+    },
     {
       label: '关闭',
       icon: 'icon-close',
@@ -306,25 +347,32 @@ export const VisualEditor: React.FC<{
                 {component.name}
               </div>
             </div>
-          )
+          ),
         )}
       </div>
       <div className="visual-editor-head">
-        {
-          buttons.map((btn, index) => {
-            const label = typeof btn.label === 'function' ? btn.label() : btn.label;
-            const icon = typeof btn.icon === 'function' ? btn.icon() : btn.icon;
-            const content = (
-              <div className="visual-editor-head-button" key={index} onClick={btn.handler}>
-                <i className={`iconfont ${icon}`} />
-                <span>{label}</span>
-              </div>
-            )
-            return !btn.tip ? content : <Tooltip key={index} placement="bottom" title={btn.tip}>
+        {buttons.map((btn, index) => {
+          const label =
+            typeof btn.label === 'function' ? btn.label() : btn.label;
+          const icon = typeof btn.icon === 'function' ? btn.icon() : btn.icon;
+          const content = (
+            <div
+              className="visual-editor-head-button"
+              key={index}
+              onClick={btn.handler}
+            >
+              <i className={`iconfont ${icon}`} />
+              <span>{label}</span>
+            </div>
+          );
+          return !btn.tip ? (
+            content
+          ) : (
+            <Tooltip key={index} placement="bottom" title={btn.tip}>
               {content}
             </Tooltip>
-          })
-        }
+          );
+        })}
       </div>
       <div className="visual-editor-operator">operator</div>
       <div className="visual-editor-body">
@@ -339,7 +387,7 @@ export const VisualEditor: React.FC<{
               config={props.config}
               block={block}
               key={index}
-              onMouseDown={e => focusHandler.block(e, block)}
+              onMouseDown={(e) => focusHandler.block(e, block)}
             />
           ))}
         </div>
