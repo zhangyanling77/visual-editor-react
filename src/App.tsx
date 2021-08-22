@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { VisualEditor} from './packages/VisualEditor';
+import React, { useState } from 'react';
+import { VisualEditor } from './packages/VisualEditor';
 import { visualConfig } from './visual.config';
 import { VisualEditorValue } from './packages/VisualEditor.utils';
 
-function App() {
+const App: React.FC = () => {
   const [editorValue, setEditorValue] = useState<VisualEditorValue>({
     container: {
       width: 1200,
@@ -35,12 +35,16 @@ function App() {
       //   zIndex: 0,
       // },
     ],
-  })
+  });
   return (
     <div className="app">
-      <VisualEditor config={visualConfig} value={editorValue} onChange={setEditorValue} />
-    </div> 
-  )
-}
+      <VisualEditor
+        config={visualConfig}
+        value={editorValue}
+        onChange={setEditorValue}
+      />
+    </div>
+  );
+};
 
 export default App;

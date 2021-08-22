@@ -1,4 +1,4 @@
-@import "@/iconfont/iconfont.css";
+@import '@/iconfont/iconfont.css';
 
 $headSize: 60px; // 顶部操作栏的高度
 $menuSize: 275px; // 菜单列表的宽度
@@ -61,7 +61,7 @@ $size: 4px;
         transition: all linear 0.1s;
         user-select: none;
 
-        &>span {
+        & > span {
           font-size: 12px;
         }
 
@@ -114,12 +114,13 @@ $size: 4px;
       .visual-editor-menu-title {
         margin-bottom: 16px;
         color: $primary;
-        &>span{
+        & > span {
           margin-right: 8px;
           font-size: 16px;
         }
       }
       .visual-editor-menu-item {
+        border-radius: 4px;
         border: 1px solid $ibc;
         margin-bottom: 16px;
         position: relative;
@@ -150,6 +151,7 @@ $size: 4px;
           padding: 0 10px;
           font-size: 12px;
           line-height: 2em;
+          border-radius: 4px 0 4px 0;
         }
       }
     }
@@ -176,7 +178,12 @@ $size: 4px;
       padding-top: $headSize + 10px;
       padding-bottom: 300px;
       background-color: #f5f5f5;
-      background-image: linear-gradient(90deg, rgba(180, 180, 180, 0.15) 10%, rgba(0, 0, 0, 0) 10%), linear-gradient(rgba(180, 180, 180, 0.15) 10%, rgba(0, 0, 0, 0) 10%);
+      background-image: linear-gradient(
+          90deg,
+          rgba(180, 180, 180, 0.15) 10%,
+          rgba(0, 0, 0, 0) 10%
+        ),
+        linear-gradient(rgba(180, 180, 180, 0.15) 10%, rgba(0, 0, 0, 0) 10%);
       background-size: 10px 10px;
       overflow: auto;
       display: flex;
@@ -187,7 +194,7 @@ $size: 4px;
   .visual-editor-container {
     background-color: white;
     position: relative;
-    
+
     &::before {
       content: '';
       position: absolute;
@@ -225,7 +232,7 @@ $size: 4px;
       }
     }
   }
-  // 
+  //
   &.visual-editor-preview {
     .visual-editor-body {
       .visual-editor-container {

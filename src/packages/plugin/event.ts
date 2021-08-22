@@ -1,7 +1,7 @@
 type SimplyListener = () => void;
 
 export function createEvent() {
-  let listeners: SimplyListener[] = [];
+  const listeners: SimplyListener[] = [];
   return {
     on: (cb: SimplyListener) => {
       listeners.push(cb);
@@ -11,7 +11,7 @@ export function createEvent() {
       if (index > -1) listeners.splice(index, 1);
     },
     emit: () => {
-      listeners.forEach(item => item());
+      listeners.forEach((item) => item());
     },
   };
 }

@@ -1,4 +1,3 @@
-// @ts-ignore
 import reactRefresh from '@vitejs/plugin-react-refresh';
 import { defineConfig } from 'vite';
 // import vitePluginImp from 'vite-plugin-imp'; // 按需引入
@@ -10,7 +9,7 @@ export default defineConfig({
     outDir: 'dist',
   },
   optimizeDeps: {
-    include: []
+    include: [],
   },
   plugins: [
     reactRefresh(),
@@ -23,9 +22,9 @@ export default defineConfig({
     //   ],
     // }),
   ],
-  esbuild: {
-    jsxInject: "import React from 'react'",
-  },
+  // esbuild: {
+  //   jsxInject: "import React from 'react'",
+  // },
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
@@ -43,7 +42,7 @@ export default defineConfig({
       },
       scss: {
         // 自动导入全局样式
-        additionalData: "@import '@/styles/base.scss';", 
+        additionalData: "@import '@/styles/base.scss';",
       },
     },
   },

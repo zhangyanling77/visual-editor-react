@@ -1,8 +1,8 @@
-import { useRef } from "react";
-import deepcopy from "deepcopy";
-import { useCommander } from "./plugin/command.plugin";
-import { VisualEditorBlock, VisualEditorValue } from "./VisualEditor.utils";
-import { useCallbackRef } from "./hook/useCallbackRef";
+import { useRef } from 'react';
+import deepcopy from 'deepcopy';
+import { useCommander } from './plugin/command.plugin';
+import { VisualEditorBlock, VisualEditorValue } from './VisualEditor.utils';
+import { useCallbackRef } from './hook/useCallbackRef';
 
 export function useVisualEditorCommand({
   focusData,
@@ -15,19 +15,19 @@ export function useVisualEditorCommand({
   focusData: {
     focus: VisualEditorBlock[];
     unFocus: VisualEditorBlock[];
-  },
-  onChange: (val: VisualEditorValue) => void,
-  value: VisualEditorValue,
-  updateBlocks: (blocks: VisualEditorBlock[]) => void,
-  dragstart: { on: (cb: () => void) => void, off: (cb: () => void) => void },
-  dragend: { on: (cb: () => void) => void, off: (cb: () => void) => void },
+  };
+  onChange: (val: VisualEditorValue) => void;
+  value: VisualEditorValue;
+  updateBlocks: (blocks: VisualEditorBlock[]) => void;
+  dragstart: { on: (cb: () => void) => void; off: (cb: () => void) => void };
+  dragend: { on: (cb: () => void) => void; off: (cb: () => void) => void };
 }) {
   const commander = useCommander();
 
   /** 删除命令 */
   commander.useRegistry({
-    name: "delete",
-    keyboard: ["delete", "ctrl+d", "backspace"],
+    name: 'delete',
+    keyboard: ['delete', 'ctrl+d', 'backspace'],
     execute() {
       const data = {
         before: deepcopy(value.blocks),
@@ -53,7 +53,9 @@ export function useVisualEditorCommand({
   (() => {
     const dragData = useRef({ before: null as null | VisualEditorBlock[] });
     const handler = {
-      dragstart: useCallbackRef(() => dragData.current.before = deepcopy(value.blocks)),
+      dragstart: useCallbackRef(
+        () => (dragData.current.before = deepcopy(value.blocks)),
+      ),
       dragend: useCallbackRef(() => commander.state.commands.drag()),
     };
 
@@ -80,8 +82,8 @@ export function useVisualEditorCommand({
           undo: () => {
             updateBlocks(deepcopy(data.before));
           },
-        }
-      }
+        };
+      },
     });
   })();
 
@@ -100,7 +102,7 @@ export function useVisualEditorCommand({
         undo: () => {
           updateBlocks(deepcopy(data.before));
         },
-      }
+      };
     },
   });
 
@@ -112,10 +114,10 @@ export function useVisualEditorCommand({
     execute: () => {
       return {
         redo: () => {
-          value.blocks.forEach(block => block.focus = true);
+          value.blocks.forEach((block) => (block.focus = true));
           updateBlocks(deepcopy(value.blocks));
         },
-      }
+      };
     },
   });
 
@@ -126,12 +128,18 @@ export function useVisualEditorCommand({
     execute: () => {
       const data = {
         before: deepcopy(value.blocks),
-        after: deepcopy((() => {
-          const { focus, unFocus } = focusData;
-          const maxZIndex = unFocus.reduce((prev, block) => Math.max(prev, block.zIndex), -Infinity) + 1;
-          focus.forEach(block => block.zIndex = maxZIndex);
-          return value.blocks;
-        })()),
+        after: deepcopy(
+          (() => {
+            const { focus, unFocus } = focusData;
+            const maxZIndex =
+              unFocus.reduce(
+                (prev, block) => Math.max(prev, block.zIndex),
+                -Infinity,
+              ) + 1;
+            focus.forEach((block) => (block.zIndex = maxZIndex));
+            return value.blocks;
+          })(),
+        ),
       };
       return {
         redo: () => {
@@ -140,7 +148,7 @@ export function useVisualEditorCommand({
         undo: () => {
           updateBlocks(deepcopy(data.before));
         },
-      }
+      };
     },
   });
 
@@ -151,18 +159,24 @@ export function useVisualEditorCommand({
     execute: () => {
       const data = {
         before: deepcopy(value.blocks),
-        after: deepcopy((() => {
-          const { focus, unFocus } = focusData;
-          let minZIndex = unFocus.reduce((prev, block) => Math.min(prev, block.zIndex), Infinity) - 1;
-          if (minZIndex < 0) {
-            const dur = Math.abs(minZIndex);
-            unFocus.forEach(block => block.zIndex += dur);
-            minZIndex = 0;
-          }
-          focus.forEach(block => block.zIndex = minZIndex);
-          return deepcopy(value.blocks);
-        })()),
-      }
+        after: deepcopy(
+          (() => {
+            const { focus, unFocus } = focusData;
+            let minZIndex =
+              unFocus.reduce(
+                (prev, block) => Math.min(prev, block.zIndex),
+                Infinity,
+              ) - 1;
+            if (minZIndex < 0) {
+              const dur = Math.abs(minZIndex);
+              unFocus.forEach((block) => (block.zIndex += dur));
+              minZIndex = 0;
+            }
+            focus.forEach((block) => (block.zIndex = minZIndex));
+            return deepcopy(value.blocks);
+          })(),
+        ),
+      };
       return {
         redo: () => {
           updateBlocks(deepcopy(data.after));
@@ -170,7 +184,7 @@ export function useVisualEditorCommand({
         undo: () => {
           updateBlocks(deepcopy(data.before));
         },
-      }
+      };
     },
   });
 
@@ -178,7 +192,10 @@ export function useVisualEditorCommand({
   commander.useRegistry({
     name: 'updateValue',
     execute: (newModelValue: VisualEditorValue) => {
-      const data: { before: undefined | VisualEditorValue, after: undefined | VisualEditorValue } = {
+      const data: {
+        before: undefined | VisualEditorValue;
+        after: undefined | VisualEditorValue;
+      } = {
         before: undefined,
         after: undefined,
       };
@@ -193,7 +210,7 @@ export function useVisualEditorCommand({
           }
         },
         undo: () => onChange(deepcopy(data.before!)),
-      }
+      };
     },
   });
 
@@ -206,6 +223,7 @@ export function useVisualEditorCommand({
     clear: () => commander.state.commands.clear(),
     placeTop: () => commander.state.commands.placeTop(),
     placeBottom: () => commander.state.commands.placeBottom(),
-    updateValue: (newModelValue: VisualEditorValue) => commander.state.commands.updateValue(newModelValue),
-  }
+    updateValue: (newModelValue: VisualEditorValue) =>
+      commander.state.commands.updateValue(newModelValue),
+  };
 }
